@@ -1,4 +1,4 @@
-# For most projects, this workflow file will not need changing; you simply need
+ # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
 #
 # You may wish to alter this file to override the set of languages analyzed,
@@ -11,19 +11,30 @@
 #
 name: "CodeQL"
 
-on:
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
   push:
     branches: [ main ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
-  schedule:
-    - cron: '24 16 * * 3'
+  # schedule:
+  #  - cron: '24 16 * * 3'
 
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       actions: read
       contents: read
