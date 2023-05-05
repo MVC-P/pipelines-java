@@ -38,6 +38,13 @@ jobs:
       -
         name:   Run Trivy vulnerability scanner
         run:  trivy image  --vuln-type "os,library"  --scanners "vuln,secret"  --severity HIGH,CRITICAL  --format sarif --output result.sarif  --exit-code "1"  --ignore-unfixed  localhost:5000/cvm/pipe_java_gih:latest
+      
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'result.sarif'
+      
+      
       #- run: mkdir staging && cp target/*.war staging
       #- uses: actions/upload-artifact@v3
       #  with:
