@@ -24,16 +24,20 @@ jobs:
         name:   push to local registry
         run: docker push localhost:5000/cvm/pipe_java_gih:latest
         
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          # 'docker.io/my-organization/my-app:${{ github.sha }}'
-          image-ref: 'localhost:5000/cvm/pipe_java_gih:latest'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH' 
+    #  - name: Run Trivy vulnerability scanner
+    #    uses: aquasecurity/trivy-action@master
+    #    with:
+    #      # 'docker.io/my-organization/my-app:${{ github.sha }}'
+    #      image-ref: 'localhost:5000/cvm/pipe_java_gih:latest'
+    #      format: 'table'
+    #      exit-code: '1'
+    #      ignore-unfixed: true
+    #      vuln-type: 'os,library'
+    #      severity: 'CRITICAL,HIGH' 
+     
+      -
+        name:   Run Trivy vulnerability scanner
+        run:  trivy image  --vuln-type "os,library"  --scanners "vuln,secret"  --severity HIGH,CRITICAL  --format sarif --output result.sarif  --exit-code "1"  --ignore-unfixed  localhost:5000/cvm/pipe_java_gih:latest
       #- run: mkdir staging && cp target/*.war staging
       #- uses: actions/upload-artifact@v3
       #  with:
