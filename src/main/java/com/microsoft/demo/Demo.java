@@ -9,4 +9,7 @@ public class Demo {
 
         System.out.println("I am not covered");
     }
+  public static void main(String[] args) {
+    }
+
 }

@@ -1,0 +1,29 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: pipelines-java
+build:
+  local: {}
+  artifacts:
+    - image: localhost:5000/cvm/helloworld
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
+profiles:
+- name: p_jib
+  activation:
+    - env: MAGIC_VAR=199
+- name: p_buildpack
+  activation:
+    - env: MAGIC_VAR=299
+- name: p_jkube
+  activation:
+    - env: MAGIC_VAR=399
+
+deploy:
+  helm:
+    releases:
+      - name: helloworld
+        chartPath: target/jkube/helm/helloworld/kubernetes
+        valuesFiles:
+          - target/jkube/helm/helloworld/kubernetes/values.yaml
+        version: 1.0-SNAPSHOT
