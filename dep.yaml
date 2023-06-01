@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    jkube.io/git-branch: main
+    jkube.io/git-commit: f45de5cb77b163b61aaa151fba1d13b0f44a1138
+    jkube.io/git-url: https://github.com/MVC-P/pipelines-java.git
+  labels:
+    app: helloworld
+    group: helloworld
+    provider: jkube
+    version: 1.0-SNAPSHOT
+  name: helloworld
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: helloworld
+      group: helloworld
+      provider: jkube
+  template:
+    metadata:
+      annotations:
+        jkube.io/git-branch: main
+        jkube.io/git-commit: f45de5cb77b163b61aaa151fba1d13b0f44a1138
+        jkube.io/git-url: https://github.com/MVC-P/pipelines-java.git
+      labels:
+        app: helloworld
+        group: helloworld
+        provider: jkube
+        version: 1.0-SNAPSHOT
+    spec:
+      containers:
+        - env:
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          image: helloworld
+          imagePullPolicy: IfNotPresent
+          name: helloworld
+          securityContext:
+            privileged: false
+          volumeMounts:
+            - mountPath: /app/config
+              name: config
+      serviceAccount: ribbon
+      volumes:
+        - gitRepo:
+            directory: .
+            repository: https://github.com/jstrachan/sample-springboot-config.git
+            revision: 667ee4db6bc842b127825351e5c9bae5a4fb2147
+          name: config

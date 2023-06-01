@@ -3,21 +3,54 @@ kind: Config
 metadata:
   name: pipelines-java
 build:
+  tagPolicy:
+    gitCommit: {}
+ # inputDigest, envTemplae
   local: {}
   artifacts:
-    - image: localhost:5000/cvm/helloworld
+    - image: helloworld
+#localhost:5000/cvm/helloworld
       buildpacks:
         builder: gcr.io/buildpacks/builder:v1
+manifests:
+  rawYaml:
+  - k8s/*.yaml
+  helm:
+    releases:
+    - name: helloworld
+      chartPath: .helm
+      setValueTemplates:
+        image.repository:  "{{.IMAGE_REPO_helloworld}}"
+        image.tag: "{{.IMAGE_TAG_helloworld}}@{{.IMAGE_DIGEST_helloworld}}"
 profiles:
 - name: p_jib
   activation:
     - env: MAGIC_VAR=199
+  build:
+    local: {}
+    artifacts:
+    - image: localhost:5000/cvm/helloworld
+      jib: 
+        args: [-Djib.allowInsecureRegistries]
+# mvn -s .m2/settings.xml compile jib:build
+#  - kubectl restart deploy sample-spring-kotlin-microservice -n dev
+#  skaffold render -a skaf.out  --output="./manifests.yaml"   --offline=true
+#  skaffold build --file-output='/Users/pminkows/result.json' --push
 - name: p_buildpack
   activation:
     - env: MAGIC_VAR=299
+  build:
+    local: {}
+
 - name: p_jkube
   activation:
     - env: MAGIC_VAR=399
+  build:
+    artifacts:
+    - image: localhost:5000/cvm/helloworld
+      custom:
+        buildCommand: mvn k8s:build
+# mvn k8s:resource k8s:build
 
 #deploy:
 #  helm:

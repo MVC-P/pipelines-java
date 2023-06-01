@@ -1,0 +1,1 @@
+{"builds":[{"imageName":"localhost:5000/cvm/helloworld","tag":"localhost:5000/cvm/helloworld:f45de5c-dirty@sha256:c069b2278e81e54f6aceae0ca370a6b498dcf8249df81d11390f957eb12dd7bf"}]}
